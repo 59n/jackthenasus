@@ -1,0 +1,82 @@
+{
+  "identity": {
+    "name": "Jstn",
+    "title": "Futures Trader & Hobbyist Devloper",
+    "tagline": "Simplicity is the ultimate sophistication."
+  },
+  "hero": {
+    "summary": "I help early-stage traders.",
+    "availability": "Currently working on expanding my capital - Q4 2025.",
+    "primaryAction": {
+      "label": "Reach out to me",
+      "href": "mailto:mail@thejstn.me"
+    },
+    "secondaryAction": {
+      "label": "View hobby project",
+      "href": "https://panel.mom"
+    },
+    "metrics": [
+      {
+        "label": "Years of experience",
+        "value": "3+"
+      },
+      {
+        "label": "Figures funded",
+        "value": "7"
+      },
+      {
+        "label": "Payouts",
+        "value": "100k+"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "heading": "What I do",
+      "body": "Product direction, design systems, and front-of-house web experiences for seed to Series B teams."
+    },
+    {
+      "heading": "How I work",
+      "body": "Deep partnership with founders and product leads, translating fuzzy ideas into polished flows, prototypes, and production-ready UIs."
+    },
+    {
+      "heading": "Now",
+      "body": "Partnering with Mercury on their payments dashboard while shaping the brand refresh for Atlas Index."
+    }
+  ],
+  "highlights": [
+    {
+      "title": "Mercury",
+      "description": "Rebuilt the design system and marketing site, unlocking a 40% faster iteration cadence across product squads.",
+      "meta": "2024 · Product Design"
+    },
+    {
+      "title": "Northwind",
+      "description": "Crafted a responsive marketing engine that lifted trial-to-paid conversions by 30% within three months.",
+      "meta": "2023 · Frontend Lead"
+    },
+    {
+      "title": "Atlas Index",
+      "description": "Developed a modular brand identity and web presence ahead of their Series A announcement.",
+      "meta": "2022 · Brand & Web"
+    }
+  ],
+  "contact": {
+    "note": "Based in Dubai",
+    "email": "mail@thejstn.me",
+    "socials": [
+      {
+        "label": "Solo.to",
+        "href": "https://solo.to/btc"
+      },
+      {
+        "label": "Twitter",
+        "href": "https://twitter.com/bonelet"
+      },
+      {
+        "label": "Instagram",
+        "href": "https://instagram.com/alexdoe"
+      }
+    ]
+  }
+}

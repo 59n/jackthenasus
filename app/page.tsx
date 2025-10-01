@@ -1,95 +1,112 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { getSiteContent } from "@/lib/content";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const content = getSiteContent();
+  const { identity, hero, sections, highlights, contact } = content;
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  return (
+    <main className="page">
+      <div className="shell">
+        <header className="hero">
+          <div className="hero__top">
+            <div className="hero__identity">
+              <span className="eyebrow">{identity.title}</span>
+              <h1>{identity.name}</h1>
+            </div>
+            <ThemeToggle />
+          </div>
+
+          <p className="hero__tagline">{identity.tagline}</p>
+          <p className="hero__summary">{hero.summary}</p>
+
+          <div className="hero__actions">
+            {hero.primaryAction ? (
+              <a
+                className="button button--primary"
+                href={hero.primaryAction.href}
+              >
+                {hero.primaryAction.label}
+              </a>
+            ) : null}
+            {hero.secondaryAction ? (
+              <a
+                className="button button--ghost"
+                href={hero.secondaryAction.href}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {hero.secondaryAction.label}
+              </a>
+            ) : null}
+          </div>
+
+          <div className="hero__meta">
+            <p className="hero__availability">{hero.availability}</p>
+            <dl className="metrics">
+              {hero.metrics.map((metric) => (
+                <div className="metrics__item" key={metric.label}>
+                  <dt>{metric.label}</dt>
+                  <dd>{metric.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </header>
+
+        <section className="pillars" aria-label="Focus areas">
+          {sections.map((section) => (
+            <article className="pillars__card" key={section.heading}>
+              <h2>{section.heading}</h2>
+              <p>{section.body}</p>
+            </article>
+          ))}
+        </section>
+
+        <section className="highlights" aria-label="Selected work">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">Selected work</span>
+              <h2>Impact snapshots</h2>
+            </div>
+            <span className="section-heading__note">Recent releases and collaborations</span>
+          </div>
+          <div className="highlights__grid">
+            {highlights.map((highlight) => (
+              <article className="highlight" key={highlight.title}>
+                <div className="highlight__header">
+                  <h3>{highlight.title}</h3>
+                  <span>{highlight.meta}</span>
+                </div>
+                <p>{highlight.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <footer className="footer" aria-label="Contact">
+          <div className="footer__primary">
+            <span className="eyebrow">Stay in touch</span>
+            <p>{contact.note}</p>
+            <a className="email" href={`mailto:${contact.email}`}>
+              {contact.email}
+            </a>
+          </div>
+          <div className="footer__links">
+            <span className="eyebrow">Elsewhere</span>
+            <ul>
+              {contact.socials.map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} target="_blank" rel="noreferrer">
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className="footer__credit">© {new Date().getFullYear()} {identity.name}. All rights reserved.</p>
+        </footer>
+      </div>
+    </main>
   );
 }

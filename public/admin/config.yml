@@ -1,0 +1,84 @@
+backend:
+  name: git-gateway
+  branch: main
+
+local_backend: false
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+publish_mode: editorial_workflow
+
+site_url: "https://thejstn.me"
+display_url: "https://thejstn.me"
+
+collections:
+  - name: site
+    label: Site Content
+    files:
+      - label: Landing Page
+        name: landing
+        file: content/site.json
+        format: json
+        fields:
+          - label: Identity
+            name: identity
+            widget: object
+            fields:
+              - { label: Name, name: name, widget: string }
+              - { label: Title, name: title, widget: string }
+              - { label: Tagline, name: tagline, widget: text }
+          - label: Hero
+            name: hero
+            widget: object
+            fields:
+              - { label: Summary, name: summary, widget: text }
+              - { label: Availability, name: availability, widget: string }
+              - label: Primary Action
+                name: primaryAction
+                widget: object
+                required: false
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: URL, name: href, widget: string }
+              - label: Secondary Action
+                name: secondaryAction
+                widget: object
+                required: false
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: URL, name: href, widget: string }
+              - label: Metrics
+                name: metrics
+                widget: list
+                summary: "{{fields.label}} — {{fields.value}}"
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Value, name: value, widget: string }
+          - label: Sections
+            name: sections
+            widget: list
+            summary: "{{fields.heading}}"
+            fields:
+              - { label: Heading, name: heading, widget: string }
+              - { label: Body, name: body, widget: text }
+          - label: Highlights
+            name: highlights
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - { label: Title, name: title, widget: string }
+              - { label: Meta, name: meta, widget: string }
+              - { label: Description, name: description, widget: text }
+          - label: Contact
+            name: contact
+            widget: object
+            fields:
+              - { label: Note, name: note, widget: text }
+              - { label: Email, name: email, widget: string }
+              - label: Socials
+                name: socials
+                widget: list
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: URL, name: href, widget: string }
