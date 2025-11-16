@@ -5,6 +5,10 @@
 [env]
   [env.production]
     NEXT_PUBLIC_SITE_URL = "https://jack.thenas.us"
+    # GitHub OAuth credentials for CMS authorization
+    GITHUB_CLIENT_ID = "Ov23lirlZfaNhvVDjECH"
+    # IMPORTANT: Set GITHUB_CLIENT_SECRET in Netlify Dashboard > Site Settings > Build & Deploy > Environment
+    # Do NOT commit the secret to this file!
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"

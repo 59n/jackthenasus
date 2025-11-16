@@ -31,51 +31,283 @@
         font-size: 0.95rem;
         opacity: 0.7;
       }
+
+      #auth-required {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.95);
+        z-index: 99999;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #auth-required.show {
+        display: flex;
+      }
+
+      .auth-modal {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 2rem;
+        max-width: 400px;
+        text-align: center;
+        color: #f8fafc;
+      }
+
+      .auth-modal h1 {
+        margin: 0 0 1rem 0;
+        font-size: 1.5rem;
+      }
+
+      .auth-modal p {
+        margin: 0 0 1.5rem 0;
+        opacity: 0.9;
+        line-height: 1.6;
+      }
+
+      .auth-modal button {
+        padding: 0.75rem 1.5rem;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background 0.2s;
+      }
+
+      .auth-modal button:hover {
+        background: #2563eb;
+      }
+
+      .auth-modal .error {
+        background: #7f1d1d;
+        border: 1px solid #dc2626;
+        color: #fca5a5;
+        padding: 0.75rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+      }
     </style>
   </head>
   <body class="is-loading">
+    <!-- Auth check overlay -->
+    <div id="auth-required">
+      <div class="auth-modal">
+        <h1>CMS Access</h1>
+        <p id="auth-message">Verifying your authorization...</p>
+        <div id="auth-error" class="error" style="display: none;"></div>
+        <button id="auth-button" onclick="loginWithGitHub()">Login with GitHub</button>
+      </div>
+    </div>
+
+    <!-- Loading state for CMS -->
     <div class="loading" data-loading>
       <strong>Loading the content manager…</strong>
-      <span>Please ensure Netlify Identity is enabled.</span>
+      <span>Initializing...</span>
     </div>
+
     <script>
       window.CMS_MANUAL_INIT = true;
-    </script>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-    <script>
-      const removeLoadingState = () => {
-        const loader = document.querySelector('[data-loading]');
-        if (loader) {
-          loader.remove();
-        }
-        document.body.classList.remove("is-loading");
-      };
+      const AUTHORIZED_USERS = ["59n"];
+      let cmsClosed = false;
 
-      const watchForCMSMount = () => {
-        if (document.getElementById("nc-root")) {
-          removeLoadingState();
+      // GitHub OAuth app config
+      const GITHUB_CLIENT_ID = "Ov23lirlZfaNhvVDjECH";
+      const REDIRECT_URI = `${window.location.origin}/admin/`;
+
+      // Check auth immediately
+      async function checkAuth() {
+        console.log("[Auth] Checking authorization...");
+
+        // Check if returning from GitHub OAuth
+        const params = new URLSearchParams(window.location.hash.slice(1));
+        const code = params.get("code");
+        const state = params.get("state");
+
+        if (code) {
+          console.log("[Auth] GitHub OAuth code received, exchanging for token...");
+          showAuthOverlay(true, "Exchanging code for token...");
+          await exchangeGitHubCode(code);
           return;
         }
-        requestAnimationFrame(watchForCMSMount);
-      };
 
-      watchForCMSMount();
+        // Check for existing stored token
+        const storedToken = localStorage.getItem("github_cms_token");
+        if (storedToken) {
+          console.log("[Auth] Found stored GitHub token, verifying...");
+          showAuthOverlay(true, "Verifying authorization...");
+          const isAuthorized = await verifyGitHubToken(storedToken);
+          if (isAuthorized) {
+            hidAuthOverlay();
+            initCMS();
+            return;
+          } else {
+            console.warn("[Auth] Stored token is invalid or user not authorized");
+            localStorage.removeItem("github_cms_token");
+          }
+        }
 
-      const initCMS = () => {
-        if (!window.CMS) return;
-        window.CMS.init({
-          config: {
-            load_config_file: true,
-            config_file: "/admin/config.yml",
-          },
-        });
-      };
-
-      if (window.CMS) {
-        initCMS();
-      } else {
-        document.addEventListener("CMSLoaded", initCMS);
+        // No valid auth found, show login
+        console.log("[Auth] No valid authorization found, showing login");
+        showAuthOverlay(false, "Sign in with GitHub to access the CMS");
       }
+
+      function showAuthOverlay(loading, message) {
+        const overlay = document.getElementById("auth-required");
+        const msgEl = document.getElementById("auth-message");
+        const button = document.getElementById("auth-button");
+
+        msgEl.textContent = message;
+        button.style.display = loading ? "none" : "block";
+        overlay.classList.add("show");
+      }
+
+      function hidAuthOverlay() {
+        document.getElementById("auth-required").classList.remove("show");
+      }
+
+      function loginWithGitHub() {
+        const state = Math.random().toString(36).substring(7);
+        localStorage.setItem("oauth_state", state);
+
+        const params = new URLSearchParams({
+          client_id: GITHUB_CLIENT_ID,
+          redirect_uri: REDIRECT_URI,
+          scope: "repo user",
+          state: state,
+        });
+
+        window.location.href = `https://github.com/login/oauth/authorize?${params}`;
+      }
+
+      async function exchangeGitHubCode(code) {
+        try {
+          // Exchange code for token on our backend
+          const response = await fetch("/api/auth/github-token", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Token exchange failed");
+          }
+
+          const { token } = await response.json();
+          localStorage.setItem("github_cms_token", token);
+
+          // Verify the token and check authorization
+          const isAuthorized = await verifyGitHubToken(token);
+
+          if (!isAuthorized) {
+            showAuthError(
+              "User not authorized. Please log in with an authorized GitHub account."
+            );
+            localStorage.removeItem("github_cms_token");
+            return;
+          }
+
+          // Clean URL and show CMS
+          window.history.replaceState({}, document.title, "/admin/");
+          hidAuthOverlay();
+          initCMS();
+        } catch (error) {
+          console.error("[Auth] Error exchanging code:", error);
+          showAuthError("Failed to authenticate. Please try again.");
+        }
+      }
+
+      async function verifyGitHubToken(token) {
+        try {
+          const response = await fetch("https://api.github.com/user", {
+            headers: {
+              Authorization: `token ${token}`,
+              Accept: "application/vnd.github.v3+json",
+            },
+          });
+
+          if (!response.ok) {
+            console.warn("[Auth] GitHub API returned", response.status);
+            return false;
+          }
+
+          const user = await response.json();
+          const username = user.login;
+
+          console.log(`[Auth] GitHub user: ${username}`);
+
+          if (AUTHORIZED_USERS.includes(username)) {
+            console.log(`[Auth] User "${username}" is authorized ✓`);
+            return true;
+          } else {
+            console.warn(
+              `[Auth] User "${username}" is not in authorized list:`,
+              AUTHORIZED_USERS
+            );
+            return false;
+          }
+        } catch (error) {
+          console.error("[Auth] Error verifying token:", error);
+          return false;
+        }
+      }
+
+      function showAuthError(message) {
+        const errorEl = document.getElementById("auth-error");
+        errorEl.textContent = message;
+        errorEl.style.display = "block";
+        document.getElementById("auth-button").style.display = "block";
+      }
+
+      function initCMS() {
+        if (cmsClosed) return;
+        const removeLoadingState = () => {
+          const loader = document.querySelector("[data-loading]");
+          if (loader) {
+            loader.remove();
+          }
+          document.body.classList.remove("is-loading");
+        };
+
+        const watchForCMSMount = () => {
+          if (document.getElementById("nc-root")) {
+            removeLoadingState();
+            return;
+          }
+          requestAnimationFrame(watchForCMSMount);
+        };
+
+        watchForCMSMount();
+
+        const initCMSApp = () => {
+          if (!window.CMS) return;
+          window.CMS.init({
+            config: {
+              load_config_file: true,
+              config_file: "/admin/config.yml",
+            },
+          });
+        };
+
+        if (window.CMS) {
+          initCMSApp();
+        } else {
+          document.addEventListener("CMSLoaded", initCMSApp);
+        }
+      }
+
+      // Start auth check on page load
+      checkAuth();
     </script>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </body>
 </html>
+

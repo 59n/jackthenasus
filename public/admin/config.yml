@@ -1,8 +1,8 @@
+## Decap CMS with custom GitHub OAuth authentication.
+## The admin page (index.html) handles GitHub OAuth login and verification.
+## Once authenticated, the CMS uses a test backend to save edits.
 backend:
-  name: git-gateway
-  branch: main
-
-local_backend: true
+  name: test_backend
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
