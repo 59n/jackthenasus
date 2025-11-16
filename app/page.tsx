@@ -1,5 +1,86 @@
+"use client";
+
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getSiteContent } from "@/lib/content";
+import { useState } from "react";
+
+function HighlightCard({ highlight }: { highlight: { title: string; meta: string; description: string; image?: string; code?: string } }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Determine what content to render
+  let contentToRender = highlight.description;
+  
+  // If code is provided, use that; otherwise if image is provided, render it
+  if (highlight.code) {
+    contentToRender = highlight.code;
+  } else if (highlight.image) {
+    contentToRender = `<img src="${highlight.image}" alt="${highlight.title}" style="max-width: 100%; height: auto; display: block;" />`;
+  }
+
+  return (
+    <article 
+      className="highlight" 
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        minHeight: '120px',
+        transition: 'all 0.3s ease'
+      }}
+      onClick={() => setIsOpen(!isOpen)}
+    >
+      <div className="highlight__header" style={{ cursor: 'pointer', userSelect: 'none', display: 'flex', alignItems: 'center', flex: 0 }}>
+        <h3 style={{ margin: 0, flex: 1 }}>{highlight.title}</h3>
+        <span>{highlight.meta}</span>
+        <span style={{ marginLeft: '20px', fontSize: '1.2em', minWidth: '20px', textAlign: 'center', transition: 'transform 0.3s ease', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+          {isOpen ? '−' : '+'}
+        </span>
+      </div>
+      {isOpen && (
+        <div style={{ marginTop: '15px', flex: 1 }}>
+          {renderHighlightDescription(contentToRender)}
+        </div>
+      )}
+    </article>
+  );
+}
+
+function renderHighlightDescription(desc: string) {
+  if (!desc) return null;
+
+  // Detect presence of HTML tags or markdown image syntax
+  const hasHtmlTag = /<[^>]+>/.test(desc);
+  const hasMarkdownImage = /!\[[^\]]*\]\([^\)]+\)/.test(desc);
+
+  // Convert markdown image syntax ![alt](src "title") -> <img ... />
+  if (hasMarkdownImage) {
+    desc = desc.replace(/!\[([^\]]*)\]\((\S+?)(?:\s+"([^"]+)")?\)/g, (_m, alt, src, title) => {
+      // Strip "public/" prefix if present (Next.js serves public/ at root)
+      src = src.replace(/^public\//, "");
+      let attrs = `src="${src}" alt="${alt || ""}" style="max-width: 100%; height: auto; display: block;"`;
+      if (title) attrs += ` title="${title}"`;
+      return `<img ${attrs} />`;
+    });
+  }
+
+  if (hasHtmlTag || hasMarkdownImage) {
+    // Strip "public/" from src attributes in HTML img tags
+    desc = desc.replace(/src="public\//g, 'src="');
+    // Wrap in container and ensure images fit within the box
+    const wrappedDesc = desc.replace(/<img([^>]*)>/g, (match) => {
+      // Add responsive image styles if not already present
+      if (!match.includes('style=')) {
+        return match.replace('<img', '<img style="max-width: 100%; height: auto; display: block;"');
+      }
+      return match;
+    });
+    
+    // We intentionally allow HTML here because content is authored locally.
+    // If content may be user-supplied, sanitize before using dangerouslySetInnerHTML.
+    return <div style={{ overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: wrappedDesc }} />;
+  }
+
+  return <p>{desc}</p>;
+}
 
 export default function Home() {
   const content = getSiteContent();
@@ -54,32 +135,26 @@ export default function Home() {
           </div>
         </header>
 
-        <section className="pillars" aria-label="Focus areas">
+        {/* <section className="pillars" aria-label="Focus areas">
           {sections.map((section) => (
             <article className="pillars__card" key={section.heading}>
               <h2>{section.heading}</h2>
               <p>{section.body}</p>
             </article>
           ))}
-        </section>
+        </section> */}
 
         <section className="highlights" aria-label="Selected work">
           <div className="section-heading">
             <div>
-              <span className="eyebrow">Selected work</span>
-              <h2>Impact snapshots</h2>
+              <span className="eyebrow">Trading</span>
+              <h2>Recent Achievements</h2>
             </div>
-            <span className="section-heading__note">Recent releases and collaborations</span>
+            {/* <span className="section-heading__note">Recent releases and collaborations</span> */}
           </div>
           <div className="highlights__grid">
             {highlights.map((highlight) => (
-              <article className="highlight" key={highlight.title}>
-                <div className="highlight__header">
-                  <h3>{highlight.title}</h3>
-                  <span>{highlight.meta}</span>
-                </div>
-                <p>{highlight.description}</p>
-              </article>
+              <HighlightCard highlight={highlight} key={highlight.title} />
             ))}
           </div>
         </section>

@@ -30,6 +30,8 @@ export type SiteContent = {
     title: string;
     description: string;
     meta: string;
+    image?: string;
+    code?: string;
   }>;
   contact: {
     note: string;

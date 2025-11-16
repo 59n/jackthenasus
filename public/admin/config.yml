@@ -2,15 +2,15 @@ backend:
   name: git-gateway
   branch: main
 
-local_backend: false
+local_backend: true
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
 
 publish_mode: editorial_workflow
 
-site_url: "https://thejstn.me"
-display_url: "https://thejstn.me"
+site_url: "https://jack.thenas.us"
+display_url: "https://jack.thenas.us"
 
 collections:
   - name: site
@@ -65,11 +65,27 @@ collections:
           - label: Highlights
             name: highlights
             widget: list
-            summary: "{{fields.title}}"
+            summary: "{{fields.title}} — {{fields.meta}}"
             fields:
               - { label: Title, name: title, widget: string }
-              - { label: Meta, name: meta, widget: string }
-              - { label: Description, name: description, widget: text }
+              - { label: Meta, name: meta, widget: string, hint: "e.g., date or achievement metric" }
+              - label: Description
+                name: description
+                widget: text
+                hint: "Enter text, HTML, or use the image picker below"
+              - label: Image
+                name: image
+                widget: image
+                required: false
+                allow_multiple: false
+                media_library:
+                  max_file_size: 5242880
+                hint: "Optional: Select an image to display. Will be automatically inserted and watermarked"
+              - label: Code/HTML
+                name: code
+                widget: text
+                required: false
+                hint: "Optional: Raw HTML/code to insert. Will override image if both are provided. Example: <div>...</div>"
           - label: Contact
             name: contact
             widget: object

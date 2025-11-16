@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://thejstn.me"),
-  title: "thejstn — Minimal Portfolio",
+  metadataBase: new URL("https://jack.thenas.us"),
+  title: "Jack - Futures Trader & Hobbyist Developer",
   description: "Minimalist portfolio landing page for a modern creative.",
 };
 

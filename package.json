@@ -7,13 +7,16 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "cms": "decap-server"
+    "cms": "decap-server",
+    "watermark": "tsx scripts/watermark-uploads.ts",
+    "watermark:watch": "tsx scripts/watch-watermark.ts"
   },
   "dependencies": {
     "next": "15.5.4",
     "next-themes": "^0.4.6",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -24,6 +27,7 @@
     "decap-server": "^3.3.1",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

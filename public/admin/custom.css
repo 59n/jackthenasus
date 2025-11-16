@@ -161,6 +161,45 @@ body {
   color: var(--admin-muted);
 }
 
+/* Markdown editor improvements */
+#nc-root [class*="MarkdownEditor"],
+#nc-root [class*="RichText"],
+#nc-root textarea {
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace !important;
+  font-size: 0.95rem !important;
+  line-height: 1.6 !important;
+  min-height: 300px !important;
+}
+
+/* List items styling */
+#nc-root [class*="ListItem"],
+#nc-root [class*="ObjectWidget"] {
+  border-radius: 12px;
+  border: 1px solid var(--admin-border);
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.5), rgba(241, 245, 250, 0.5));
+  margin-bottom: 12px;
+}
+
+/* Toolbar improvements */
+#nc-root [class*="Toolbar"],
+#nc-root [class*="MarkdownToolbar"] {
+  background: linear-gradient(135deg, var(--admin-shell), rgba(248, 250, 252, 0.8)) !important;
+  border-bottom: 1px solid var(--admin-border) !important;
+  padding: 12px !important;
+  border-radius: 10px 10px 0 0 !important;
+}
+
+/* Hint text styling */
+#nc-root [class*="Hint"],
+#nc-root .hint-text,
+#nc-root [class*="FieldDescription"] {
+  color: var(--admin-muted) !important;
+  font-size: 0.85rem !important;
+  margin-top: 8px !important;
+  font-style: italic !important;
+}
+
 @media (max-width: 1024px) {
   body {
     padding: 24px;

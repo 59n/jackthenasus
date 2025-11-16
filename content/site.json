@@ -1,19 +1,19 @@
 {
   "identity": {
-    "name": "Jstn",
+    "name": "Jack",
     "title": "Futures Trader & Hobbyist Devloper",
     "tagline": "Simplicity is the ultimate sophistication."
   },
   "hero": {
-    "summary": "I help early-stage traders.",
+    "summary": "On a path to financial independence.",
     "availability": "Currently working on expanding my capital - Q4 2025.",
     "primaryAction": {
       "label": "Reach out to me",
-      "href": "mailto:mail@thejstn.me"
+      "href": "mailto:jack@thenas.us"
     },
     "secondaryAction": {
-      "label": "View hobby project",
-      "href": "https://panel.mom"
+      "label": "View hobby projects",
+      "href": "https://github.com/59n"
     },
     "metrics": [
       {
@@ -30,52 +30,40 @@
       }
     ]
   },
-  "sections": [
-    {
-      "heading": "What I do",
-      "body": "Product direction, design systems, and front-of-house web experiences for seed to Series B teams."
-    },
-    {
-      "heading": "How I work",
-      "body": "Deep partnership with founders and product leads, translating fuzzy ideas into polished flows, prototypes, and production-ready UIs."
-    },
-    {
-      "heading": "Now",
-      "body": "Partnering with Mercury on their payments dashboard while shaping the brand refresh for Atlas Index."
-    }
-  ],
+  "sections": [],
   "highlights": [
     {
-      "title": "Mercury",
-      "description": "Rebuilt the design system and marketing site, unlocking a 40% faster iteration cadence across product squads.",
-      "meta": "2024 · Product Design"
+      "title": "Payout with Alpha Futures",
+      "meta": "28/10 - $628",
+      "description": ".",
+      "image": "/uploads/202508261486_j4oqceey.png"
     },
     {
-      "title": "Northwind",
-      "description": "Crafted a responsive marketing engine that lifted trial-to-paid conversions by 30% within three months.",
-      "meta": "2023 · Frontend Lead"
+      "description": "<img src=\"public/uploads/202508261486_j4oqceey.png\" alt=\"Certificate\"/>",
+      "meta": "28/10 - $628",
+      "title": "Payout with Alpha Futures 1"
     },
     {
-      "title": "Atlas Index",
-      "description": "Developed a modular brand identity and web presence ahead of their Series A announcement.",
-      "meta": "2022 · Brand & Web"
+      "title": "Payout with Alpha Futures 2",
+      "meta": "28/10 - $628",
+      "description": "<img src=\"public/uploads/202508261486_j4oqceey.png\" alt=\"Certificate\"/>"
     }
   ],
   "contact": {
-    "note": "Based in Dubai",
-    "email": "mail@thejstn.me",
+    "note": "Send a email to the address below, serious enquiries only",
+    "email": "jack@thenas.us",
     "socials": [
       {
-        "label": "Solo.to",
-        "href": "https://solo.to/btc"
+        "label": "solo.to",
+        "href": "https://solo.to/nqjack"
       },
       {
-        "label": "Twitter",
-        "href": "https://twitter.com/bonelet"
+        "label": "X",
+        "href": "https://x.com/nqjack"
       },
       {
-        "label": "Instagram",
-        "href": "https://instagram.com/alexdoe"
+        "label": "IG",
+        "href": "https://instagram.com/nqjackk"
       }
     ]
   }
